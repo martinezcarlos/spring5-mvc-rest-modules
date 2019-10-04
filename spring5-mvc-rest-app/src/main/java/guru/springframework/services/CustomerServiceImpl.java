@@ -1,16 +1,16 @@
 package guru.springframework.services;
 
 import guru.springframework.api.v1.mappers.CustomerMapper;
-import guru.springframework.api.v1.model.CustomerDTO;
 import guru.springframework.controllers.v1.CustomerController;
 import guru.springframework.domain.Customer;
 import guru.springframework.exceptions.ResourceNotFoundException;
+import guru.springframework.model.CustomerDTO;
 import guru.springframework.repositories.CustomerRepository;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by carlosmartinez on 2019-04-08 20:14

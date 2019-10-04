@@ -1,12 +1,9 @@
 package guru.springframework.controllers.v1;
 
 import guru.springframework.api.v1.model.CategoryDTO;
-import guru.springframework.controllers.v1.CategoryController;
 import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.exceptions.RestResponseEntityExceptionHandler;
 import guru.springframework.services.CategoryService;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,6 +12,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -61,7 +61,8 @@ class CategoryControllerTest {
 
     when(categoryService.getAllCategories()).thenReturn(categories);
 
-    mockMvc.perform(get(CategoryController.BASE_URL).contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(CategoryController.BASE_URL).contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.categories", hasSize(2)));
   }
@@ -75,7 +76,8 @@ class CategoryControllerTest {
     when(categoryService.getCategoryByName(anyString())).thenReturn(category1);
 
     mockMvc.perform(get(String.format("%s/Jim", CategoryController.BASE_URL)).contentType(
-        MediaType.APPLICATION_JSON))
+        MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name", equalTo(NAME)));
   }

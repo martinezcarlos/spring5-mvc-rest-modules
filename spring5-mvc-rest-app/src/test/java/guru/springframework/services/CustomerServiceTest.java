@@ -1,23 +1,23 @@
 package guru.springframework.services;
 
 import guru.springframework.api.v1.mappers.CustomerMapper;
-import guru.springframework.api.v1.model.CustomerDTO;
 import guru.springframework.controllers.v1.CustomerController;
 import guru.springframework.domain.Customer;
+import guru.springframework.model.CustomerDTO;
 import guru.springframework.repositories.CustomerRepository;
-import java.util.Arrays;
-import java.util.List;
-
-import guru.springframework.services.CustomerService;
-import guru.springframework.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -123,6 +123,8 @@ class CustomerServiceTest {
   @Test
   void deleteCustomerById() {
     final Long id = 1L;
+    given(customerRepository.existsById(anyLong())).willReturn(true);
+    given(customerRepository.findById(anyLong())).willReturn(Optional.empty());
     customerService.deleteCustomerById(id);
     verify(customerRepository, times(1)).deleteById(anyLong());
   }

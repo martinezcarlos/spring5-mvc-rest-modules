@@ -1,6 +1,5 @@
 package guru.springframework.api.v1.mappers;
 
-import guru.springframework.api.v1.mappers.CategoryMapper;
 import guru.springframework.api.v1.model.CategoryDTO;
 import guru.springframework.domain.Category;
 import org.junit.jupiter.api.Test;

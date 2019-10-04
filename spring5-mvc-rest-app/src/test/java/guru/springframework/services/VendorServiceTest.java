@@ -5,16 +5,14 @@ import guru.springframework.api.v1.model.VendorDTO;
 import guru.springframework.controllers.v1.VendorController;
 import guru.springframework.domain.Vendor;
 import guru.springframework.repositories.VendorRepository;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import guru.springframework.services.VendorService;
-import guru.springframework.services.VendorServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -125,6 +123,8 @@ class VendorServiceTest {
   @Test
   void deleteVendorById() {
     // Given
+    given(vendorRepository.existsById(anyLong())).willReturn(true);
+    given(vendorRepository.findById(anyLong())).willReturn(Optional.empty());
     // When
     vendorService.deleteVendorById(ID);
     // Then

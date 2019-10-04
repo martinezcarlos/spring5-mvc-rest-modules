@@ -1,6 +1,5 @@
 package guru.springframework.api.v1.mappers;
 
-import guru.springframework.api.v1.mappers.VendorMapper;
 import guru.springframework.api.v1.model.VendorDTO;
 import guru.springframework.domain.Vendor;
 import org.junit.jupiter.api.Test;

@@ -1,25 +1,27 @@
 package guru.springframework.controllers.v1;
 
-import guru.springframework.api.v1.model.CustomerDTO;
-import guru.springframework.controllers.v1.CustomerController;
 import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.exceptions.RestResponseEntityExceptionHandler;
+import guru.springframework.model.CustomerDTO;
 import guru.springframework.services.CustomerService;
-import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -27,12 +29,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by carlosmartinez on 2019-04-08 20:25
  */
+@ExtendWith(MockitoExtension.class)
 class CustomerControllerTest extends AbstractRestControllerTest {
 
   @Mock
@@ -45,7 +49,7 @@ class CustomerControllerTest extends AbstractRestControllerTest {
 
   @BeforeEach
   void setUp() {
-    MockitoAnnotations.initMocks(this);
+//    MockitoAnnotations.initMocks(this);
     mockMvc = MockMvcBuilders.standaloneSetup(customerController)
         .setControllerAdvice(new RestResponseEntityExceptionHandler())
         .build();
@@ -67,7 +71,8 @@ class CustomerControllerTest extends AbstractRestControllerTest {
 
     when(customerService.getAllCustomers()).thenReturn(Arrays.asList(customer1, customer2));
 
-    mockMvc.perform(get(CustomerController.BASE_URL).contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(CustomerController.BASE_URL).contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.customers", hasSize(2)));
   }
@@ -84,8 +89,9 @@ class CustomerControllerTest extends AbstractRestControllerTest {
     when(customerService.getCustomerById(anyLong())).thenReturn(customer1);
 
     //when
-    mockMvc.perform(get(String.format("%s/1", CustomerController.BASE_URL)).contentType(
-        MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(String.format("%s/1", CustomerController.BASE_URL))
+        .accept(MediaType.APPLICATION_JSON).contentType(
+            MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.firstname", equalTo("Michale")));
   }
@@ -102,14 +108,17 @@ class CustomerControllerTest extends AbstractRestControllerTest {
     returnDTO.setLastname(customer.getLastname());
     returnDTO.setCustomerUrl(String.format("%s/1", CustomerController.BASE_URL));
 
-    when(customerService.createCustomer(customer)).thenReturn(returnDTO);
+    given(customerService.createCustomer(any(CustomerDTO.class))).willReturn(returnDTO);
 
     //when/then
-    mockMvc.perform(post(CustomerController.BASE_URL).contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(post(CustomerController.BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
         .content(asJsonString(customer)))
         .andExpect(status().isCreated())
+        .andDo(print())
         .andExpect(jsonPath("$.firstname", equalTo("Fred")))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.customer_url",
+        .andExpect(MockMvcResultMatchers.jsonPath("$.customerUrl",
             equalTo(String.format("%s/1", CustomerController.BASE_URL))));
   }
 
@@ -130,11 +139,12 @@ class CustomerControllerTest extends AbstractRestControllerTest {
 
     //when/then
     mockMvc.perform(put(String.format("%s/1", CustomerController.BASE_URL)).contentType(
-        MediaType.APPLICATION_JSON).content(asJsonString(customer)))
+        MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON).content(asJsonString(customer)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.firstname", equalTo("Fred")))
         .andExpect(jsonPath("$.lastname", equalTo("Flintstone")))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.customer_url",
+        .andExpect(MockMvcResultMatchers.jsonPath("$.customerUrl",
             equalTo(String.format("%s/1", CustomerController.BASE_URL))));
   }
 
@@ -153,18 +163,19 @@ class CustomerControllerTest extends AbstractRestControllerTest {
     when(customerService.patchCustomer(anyLong(), any(CustomerDTO.class))).thenReturn(returnDTO);
 
     mockMvc.perform(patch(String.format("%s/1", CustomerController.BASE_URL)).contentType(
-        MediaType.APPLICATION_JSON).content(asJsonString(customer)))
+        MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(asJsonString(customer)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.firstname", equalTo("Fred")))
         .andExpect(jsonPath("$.lastname", equalTo("Flintstone")))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.customer_url",
+        .andExpect(MockMvcResultMatchers.jsonPath("$.customerUrl",
             equalTo(String.format("%s/1", CustomerController.BASE_URL))));
   }
 
   @Test
   void testDeleteCustomer() throws Exception {
     mockMvc.perform(delete(String.format("%s/1", CustomerController.BASE_URL)).contentType(
-        MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     verify(customerService).deleteCustomerById(anyLong());
   }
 

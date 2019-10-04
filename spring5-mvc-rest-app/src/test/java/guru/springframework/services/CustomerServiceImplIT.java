@@ -1,22 +1,20 @@
 package guru.springframework.services;
 
 import guru.springframework.api.v1.mappers.CustomerMapper;
-import guru.springframework.api.v1.model.CustomerDTO;
 import guru.springframework.bootstrap.Bootstrap;
 import guru.springframework.domain.Customer;
+import guru.springframework.model.CustomerDTO;
 import guru.springframework.repositories.CategoryRepository;
 import guru.springframework.repositories.CustomerRepository;
 import guru.springframework.repositories.VendorRepository;
-import java.util.List;
-
-import guru.springframework.services.CustomerService;
-import guru.springframework.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;

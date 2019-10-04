@@ -4,15 +4,13 @@ import guru.springframework.api.v1.mappers.CategoryMapper;
 import guru.springframework.api.v1.model.CategoryDTO;
 import guru.springframework.domain.Category;
 import guru.springframework.repositories.CategoryRepository;
-import java.util.Arrays;
-import java.util.List;
-
-import guru.springframework.services.CategoryService;
-import guru.springframework.services.CategoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
